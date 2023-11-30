@@ -32,18 +32,18 @@ jobs:
     - name: Login to Docker
       run: docker login -u ${{secrets.DOCKER_USERNAME}} -p ${{secrets.DOCKER_PASSWORD}}
     - name: Build Docker image
-      run: docker buildx build -t maslogistics/MASLogistics-01
+      run: docker buildx build masintegration/maslogistics
     - name: Publish image to docket hub
-      run: docker push maslogistics/MASLogistics-01:latest
+      run: docker push masintegration/maslogistics:latest
 
   deploy:
     needs: build
     runs-on: [aws-ec2]
     steps:
       - name: Pull image from docker hub
-        run: docker pull maslogistics/MASLogistics-01:latest
+        run: docker pull masintegration/maslogistics:latest
       - name: Delete old container
         run: docker rm -f maslogistics-container
       - name: Run docker container
-        run: docker run -d -p 8080:8080 --name maslogistics-container maslogistics/MASLogistics-01
+        run: docker run -d -p 8080:8080 --name maslogistics-container masintegration/maslogistics
     
