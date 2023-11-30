@@ -32,7 +32,7 @@ jobs:
     - name: Login to Docker
       run: docker login -u ${{secrets.DOCKER_USERNAME}} -p ${{secrets.DOCKER_PASSWORD}}
     - name: Build Docker image
-      run: docker build -t maslogistics/MASLogistics-01
+      run: docker buildx build -t maslogistics/MASLogistics-01
     - name: Publish image to docket hub
       run: docker push maslogistics/MASLogistics-01:latest
 
