@@ -42,6 +42,8 @@ jobs:
     steps:
       - name: Pull image from docker hub
         run: docker pull gulnazb/masintegration:latest
+      - name: Stop old container
+        run: docker stop maslogistics-container
       - name: Delete old container
         run: docker rm -f maslogistics-container
       - name: Run docker container
