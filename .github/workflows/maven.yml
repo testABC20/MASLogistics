@@ -38,7 +38,7 @@ jobs:
 
   deploy:
     needs: build
-    runs-on: [ec2_mas]
+    runs-on: [aws-ec2]
     steps:
       - name: Pull image from docker hub
         run: docker pull gulnazb/masintegration:latest
