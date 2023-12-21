@@ -16,3 +16,7 @@ spring:
       idle-timeout: 30000
     algorithm: PBEWithMD5AndDES
     word: mas@1logis
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
