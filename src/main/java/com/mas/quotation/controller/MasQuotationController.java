@@ -22,11 +22,11 @@ import reactor.core.publisher.Mono;
 
 @RestController
 @RequestMapping(value = "/masquote/")
-@CrossOrigin(value = {"*"}, exposedHeaders = {"Content-Disposition"})
 public class MasQuotationController {
   @Autowired
   MasQuotationService service;
   
+  @CrossOrigin
   @GetMapping({"/getPacknPorts"})
   public Mono<Response> findAllPackNPorts() {
     List<PackNPorts> masQuoteList = service.findAllPackNPorts();
@@ -41,6 +41,7 @@ public class MasQuotationController {
     return Mono.just(response);
   }
   
+  @CrossOrigin
   @GetMapping({"/getPacknPortsByMode/{transportMode}"})
   public Mono<Response> getPackNPortsTransport(@PathVariable String transportMode) {
     List<PackNPorts> masQuoteList = null;
@@ -60,6 +61,7 @@ public class MasQuotationController {
     return Mono.just(response);
   }
   
+  @CrossOrigin
   @PostMapping(value = "/saveQuote", headers = "Accept=application/json")
   public Mono<Response> saveQuotation(@RequestBody QuotationRequest quote) {
 	  Response response = new Response();
@@ -76,6 +78,7 @@ public class MasQuotationController {
 	  return Mono.just(response);
   }
   
+  @CrossOrigin
   @GetMapping({"/health"})
   public String health() {
     return "Hello & Welcome to MAS Logistics !!!";
