@@ -47,5 +47,5 @@ jobs:
       - name: Delete old container
         run: docker rm -f maslogistics-container
       - name: Run docker container
-        run: docker run -d -p 443:443 --name maslogistics-container gulnazb/masintegration
+        run: docker run -d -p 8080:8080 --name maslogistics-container gulnazb/masintegration
     
