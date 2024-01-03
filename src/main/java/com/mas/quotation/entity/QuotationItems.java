@@ -2,6 +2,8 @@ package com.mas.quotation.entity;
 
 import java.sql.Timestamp;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -45,6 +47,7 @@ public class QuotationItems {
 	private String measurementUnit;
 	@Column(name = "cbm")
 	private Float cbm; 
+	@JsonIgnore
 	@Column(name = "drawing")
 	@Lob
 	private byte[] drawing; 

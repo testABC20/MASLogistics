@@ -4,6 +4,8 @@ package com.mas.quotation.entity;
 import java.sql.Timestamp;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -65,6 +67,7 @@ public class Quotations {
 	private String classification;
 	@Column(name = "un_no")
 	private String unNo; 
+	@JsonIgnore
 	@Column(name = "msds")
 	@Lob
 	private byte[] msds; 
