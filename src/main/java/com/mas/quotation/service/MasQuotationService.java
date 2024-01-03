@@ -42,9 +42,9 @@ public class MasQuotationService {
 		  try {
 			  if(files != null) {
 				  for(String keys: files.keySet()) {
-					  if(keys.equals("msdsFile")) {
+					  if(keys.equals("msdsFile") ) {
 						  MultipartFile msdsFile = files.getFirst(keys);
-						  if(null != msdsFile) {
+						  if(null != msdsFile && !msdsFile.getOriginalFilename().equals("")) {
 							  byte[] byteData = msdsFile.getBytes();
 							  quotation.setMsds(byteData);
 						  }
@@ -107,7 +107,7 @@ public class MasQuotationService {
 						  
 						  if(files != null) {
 							  drawingFile = files.getFirst("drawingFile"+count);
-							  if(null != drawingFile) {
+							  if(null != drawingFile && !drawingFile.getOriginalFilename().equals("")) {
 								  drawingFileData = drawingFile.getBytes();
 								  items.setDrawing(drawingFileData);
 							  }
