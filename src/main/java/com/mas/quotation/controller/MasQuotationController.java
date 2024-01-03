@@ -4,13 +4,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.mas.quotation.entity.PackNPorts;
 import com.mas.quotation.entity.Quotations;
@@ -62,10 +66,11 @@ public class MasQuotationController {
   }
   
   @CrossOrigin
-  @PostMapping(value = "/saveQuote", headers = "Accept=application/json")
-  public Mono<Response> saveQuotation(@RequestBody QuotationRequest quote) {
+  @PostMapping(value = "/saveQuote", produces=MediaType.APPLICATION_JSON_VALUE,
+		     consumes=MediaType.MULTIPART_FORM_DATA_VALUE)
+  public Mono<Response> saveQuotation(@RequestPart("jsonBodyData") QuotationRequest quote, @RequestParam MultiValueMap<String, MultipartFile> files) {
 	  Response response = new Response();
-	  Quotations quotation = service.saveQuotation(quote);
+	  Quotations quotation = service.saveQuotation(quote, files);
 	  
 	  if(quotation != null) {
 		  List<Quotations> quoteList = new ArrayList<>();

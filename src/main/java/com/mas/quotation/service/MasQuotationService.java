@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.mas.quotation.dao.PackNPortsDAO;
@@ -33,20 +34,25 @@ public class MasQuotationService {
 	  return packNPortsDAO.getPackNPortsTransport(transportMode);
   }
   
-  public Quotations saveQuotation(QuotationRequest quote) {
+  public Quotations saveQuotation(QuotationRequest quote, MultiValueMap<String, MultipartFile> files) {
 	  Quotations quotation = null;
 	  if(null != quote && null != quote.getType() && !"".equals(quote.getType().trim())) {
 		  quotation = new Quotations();
 		  Timestamp currTime = new Timestamp(System.currentTimeMillis());
 		  try {
-			  quotation.setType(quote.getType());
-			  
-			  MultipartFile msdsFile = quote.getMsdsFile();
-			  if(null != msdsFile) {
-				  byte[] byteData = msdsFile.getBytes();
-				  quotation.setMsds(byteData);
+			  if(files != null) {
+				  for(String keys: files.keySet()) {
+					  if(keys.equals("msdsFile")) {
+						  MultipartFile msdsFile = files.getFirst(keys);
+						  if(null != msdsFile) {
+							  byte[] byteData = msdsFile.getBytes();
+							  quotation.setMsds(byteData);
+						  }
+						  break;
+					  }
+				  }
 			  }
-			  
+			  quotation.setType(quote.getType());
 			  
 			  if(null != quote.getName() && !"".equals(quote.getName().trim()))
 				  quotation.setName(quote.getName());
@@ -89,7 +95,7 @@ public class MasQuotationService {
 			  if(null != quote.getTotalCbm())
 				  quotation.setTotalCbm(quote.getTotalCbm());
 	
-			  
+			  int count=0;
 			  if(null != quote.getQuoteItems() && quote.getQuoteItems().size() > 0) {
 				  List<QuotationItems> quoteItemList = new ArrayList<>();
 				  QuotationItems items = null;
@@ -98,11 +104,16 @@ public class MasQuotationService {
 				  for(QuotationItemRequest itemReq: quote.getQuoteItems()) {
 					  if(null != itemReq) {
 						  items = new QuotationItems();
-						  drawingFile = itemReq.getDrawingFile();
-						  if(null != drawingFile) {
-							  drawingFileData = drawingFile.getBytes();
-							  items.setDrawing(drawingFileData);
+						  
+						  if(files != null) {
+							  drawingFile = files.getFirst("drawingFile"+count);
+							  if(null != drawingFile) {
+								  drawingFileData = drawingFile.getBytes();
+								  items.setDrawing(drawingFileData);
+							  }
 						  }
+						  
+						  count++;
 						  
 						  if(null != itemReq.getContainerType() && !"".equals(itemReq.getContainerType().trim()))
 							  items.setContainerType(itemReq.getContainerType());

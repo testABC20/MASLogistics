@@ -2,8 +2,6 @@ package com.mas.quotation.model;
 
 import java.util.List;
 
-import org.springframework.web.multipart.MultipartFile;
-
 public class QuotationRequest {
 	private List<QuotationItemRequest> quoteItems;
 	
@@ -25,7 +23,6 @@ public class QuotationRequest {
 	private String dangerous;
 	private String classification;
 	private String unNo; 
-	private MultipartFile msdsFile; 
 	private String intoTerm;
 	private String intoTermAddress;
 	private Float totalCbm;
@@ -142,12 +139,6 @@ public class QuotationRequest {
 	}
 	public void setUnNo(String unNo) {
 		this.unNo = unNo;
-	}
-	public MultipartFile getMsdsFile() {
-		return msdsFile;
-	}
-	public void setMsdsFile(MultipartFile msdsFile) {
-		this.msdsFile = msdsFile;
 	}
 	public String getIntoTerm() {
 		return intoTerm;

@@ -1,7 +1,5 @@
 package com.mas.quotation.model;
 
-import org.springframework.web.multipart.MultipartFile;
-
 public class QuotationItemRequest {
 	private String containerType;
 	private String containerQty;
@@ -14,7 +12,6 @@ public class QuotationItemRequest {
 	private Double height; 
 	private String measurementUnit;
 	private Float cbm; 
-	private MultipartFile drawingFile;
 	public String getContainerType() {
 		return containerType;
 	}
@@ -81,12 +78,5 @@ public class QuotationItemRequest {
 	public void setCbm(Float cbm) {
 		this.cbm = cbm;
 	}
-	public MultipartFile getDrawingFile() {
-		return drawingFile;
-	}
-	public void setDrawingFile(MultipartFile drawingFile) {
-		this.drawingFile = drawingFile;
-	} 
-	
 	
 }
