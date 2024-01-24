@@ -5,11 +5,20 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.amazonaws.services.simpleemail.AmazonSimpleEmailService;
+import com.amazonaws.services.simpleemail.model.Body;
+import com.amazonaws.services.simpleemail.model.Content;
+import com.amazonaws.services.simpleemail.model.Destination;
+import com.amazonaws.services.simpleemail.model.Message;
+import com.amazonaws.services.simpleemail.model.SendEmailRequest;
+import com.amazonaws.services.simpleemail.model.SendEmailResult;
 import com.mas.quotation.dao.PackNPortsDAO;
 import com.mas.quotation.dao.QuotationsDAO;
 import com.mas.quotation.entity.PackNPorts;
@@ -17,6 +26,7 @@ import com.mas.quotation.entity.QuotationItems;
 import com.mas.quotation.entity.Quotations;
 import com.mas.quotation.model.QuotationItemRequest;
 import com.mas.quotation.model.QuotationRequest;
+import com.mas.quotation.util.Constant;
 
 @Service
 public class MasQuotationService {
@@ -25,6 +35,11 @@ public class MasQuotationService {
   
   @Autowired 
   QuotationsDAO quoteDAO;
+  
+  @Autowired
+  AmazonSimpleEmailService amazonSimpleEmailService;
+  
+  final Logger logger = LoggerFactory.getLogger(this.getClass());
   
   public List<PackNPorts> findAllPackNPorts() {
     return packNPortsDAO.findAllPackNPorts();
@@ -35,6 +50,8 @@ public class MasQuotationService {
   }
   
   public Quotations saveQuotation(QuotationRequest quote, MultiValueMap<String, MultipartFile> files) {
+	  logger.info("Inside saveQuotation");
+	  
 	  Quotations quotation = null;
 	  if(null != quote && null != quote.getType() && !"".equals(quote.getType().trim())) {
 		  quotation = new Quotations();
@@ -42,7 +59,7 @@ public class MasQuotationService {
 		  try {
 			  if(files != null) {
 				  for(String keys: files.keySet()) {
-					  if(keys.equals("msdsFile") ) {
+					  if(keys.equals(Constant.MSDS_FILE) ) {
 						  MultipartFile msdsFile = files.getFirst(keys);
 						  if(null != msdsFile && !msdsFile.getOriginalFilename().equals("")) {
 							  byte[] byteData = msdsFile.getBytes();
@@ -106,7 +123,7 @@ public class MasQuotationService {
 						  items = new QuotationItems();
 						  
 						  if(files != null) {
-							  drawingFile = files.getFirst("drawingFile"+count);
+							  drawingFile = files.getFirst(Constant.DRAWING_FILE+count);
 							  if(null != drawingFile && !drawingFile.getOriginalFilename().equals("")) {
 								  drawingFileData = drawingFile.getBytes();
 								  items.setDrawing(drawingFileData);
@@ -147,13 +164,39 @@ public class MasQuotationService {
 				  quotation.setQuoteItems(quoteItemList);
 				  quotation.setCreatedAt(currTime);
 				  quotation.setUpdatedAt(currTime);
+			  }else {
+				  logger.info("No Quotation Items available");
 			  }
 			  
 			  quoteDAO.saveAndFlush(quotation);
+			  logger.info("Save Successfull");
+			  
+			  sendEmail(quote.getEmail().trim());
 		  } catch (IOException e) {
-			  e.printStackTrace();
+			  logger.error("Error Reading Multipart files:{}", e.getMessage());
+		  } catch (Exception e) {
+			  logger.error("Error Saving the Quote: {}", e.getMessage());
 		  }
+	  }else {
+		  logger.info("No Quotation available");
 	  }
 	  return quotation;
   }
+  
+	public void sendEmail(String receiverEmail) {
+		logger.info("Send email to:{}", receiverEmail);
+		try {
+			SendEmailRequest sendEmailRequest = new SendEmailRequest()
+					.withDestination(new Destination().withToAddresses(receiverEmail))
+					.withMessage(new Message()
+							.withBody(new Body()
+									.withHtml(new Content().withCharset("UTF-8").withData(Constant.EMAIL_CONTENT)))
+							.withSubject(new Content().withCharset("UTF-8").withData(Constant.EMAIL_SUBJECT)))
+					.withSource(Constant.SENDER_EMAIL);
+			SendEmailResult result = amazonSimpleEmailService.sendEmail(sendEmailRequest);
+			logger.info("Email Success Message Id:" + result.getMessageId());
+		} catch (Exception e) {
+			logger.error("Error Sending email: {}", e.getMessage());
+		}
+	}
 }

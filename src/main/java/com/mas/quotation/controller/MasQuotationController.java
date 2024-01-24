@@ -3,6 +3,8 @@ package com.mas.quotation.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.util.MultiValueMap;
@@ -30,12 +32,15 @@ public class MasQuotationController {
   @Autowired
   MasQuotationService service;
   
+  final Logger logger = LoggerFactory.getLogger(this.getClass());
+  
   @CrossOrigin
   @GetMapping({"/getPacknPorts"})
   public Mono<Response> findAllPackNPorts() {
     List<PackNPorts> masQuoteList = service.findAllPackNPorts();
     Response response = new Response();
     if(null != masQuoteList) {
+    	logger.info("FindAllPackNPorts is Success");
     	response.setResponseData(masQuoteList);
 	    response.setStatus("SUCCESS");
     }else {
@@ -50,9 +55,12 @@ public class MasQuotationController {
   public Mono<Response> getPackNPortsTransport(@PathVariable String transportMode) {
     List<PackNPorts> masQuoteList = null;
     Response response = new Response();
+    logger.info("TransportMode used is:{}",transportMode);
+    
     if(transportMode != null && !transportMode.trim().isEmpty()) {
     	masQuoteList = service.getPackNPortsTransport(transportMode);
     	 if(null != masQuoteList) {
+    		 logger.info("getPackNPortsTransport is Success");
 	    	response.setResponseData(masQuoteList);
 		    response.setStatus("SUCCESS");
 	    }else {
@@ -73,6 +81,7 @@ public class MasQuotationController {
 	  Quotations quotation = service.saveQuotation(quote, files);
 	  
 	  if(quotation != null) {
+		  logger.info("Save is Successful");
 		  List<Quotations> quoteList = new ArrayList<>();
 		  quoteList.add(quotation);
 		  response.setResponseData(quoteList);
