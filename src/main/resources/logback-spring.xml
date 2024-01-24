@@ -2,7 +2,7 @@
 <configuration>
 	<include resource="org/springframework/boot/logging/logback/defaults.xml" />
 	<include resource="org/springframework/boot/logging/logback/console-appender.xml" />
-	<property name="LOG_DIR" value="/appdata/masLogistics/Logs" />
+	<property name="LOG_DIR" value="/tmp/logs/masLogistics" />
 	<property name="HOSTNAME" value="${HOSTNAME}" />
 	<property name="LOG_FILE_NAME" value="MasQuotation.log" />
 	
