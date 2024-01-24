@@ -2,7 +2,7 @@
 <configuration>
 	<include resource="org/springframework/boot/logging/logback/defaults.xml" />
 	<include resource="org/springframework/boot/logging/logback/console-appender.xml" />
-	<property name="LOG_DIR" value="/tmp/logs/masLogistics" />
+	<property name="LOG_DIR" value="./logs" />
 	<property name="HOSTNAME" value="${HOSTNAME}" />
 	<property name="LOG_FILE_NAME" value="MasQuotation.log" />
 	
@@ -12,8 +12,16 @@
 		</encoder>
 		<file>${LOG_DIR}/${LOG_FILE_NAME}</file>
 	</appender>
+	
+	<appender name="CLOUDWATCH" class="com.mas.quotation.util.CloudWatchAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>INFO</level>
+        </filter>
+    </appender>
+	
 	<root level="INFO">
 		<appender-ref ref="CONSOLE" />
 		<appender-ref ref="ROLLING-FILE" />
+		<appender-ref ref="CLOUDWATCH" />
 	</root>
 </configuration>
