@@ -21,5 +21,5 @@ public class Constant {
 	public static String AWS_REGION = "eu-north-1";
 	public static String AWS_ACCESS_KEY = "AKIAU3AG252J4RPTZSXX";
 	public static String AWS_SECRET_KEY = "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";
-	
+	public static String SIGN_UP_SUCCESS = "SIGNED";
 }
