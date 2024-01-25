@@ -15,7 +15,7 @@
 	<description>Demo project for Spring Boot</description>
 	<packaging>war</packaging>
 	<properties>
-		<java.version>21</java.version>
+		<java.version>18</java.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -74,9 +74,6 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
-				<configuration>
-            		<mainClass>com.mas.quotation.MasQuotationApplication</mainClass>
-                </configuration>
 			</plugin>
 		</plugins>
 	</build>
