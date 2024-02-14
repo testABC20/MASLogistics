@@ -71,6 +71,10 @@ public class Quotations {
 	@Column(name = "msds")
 	@Lob
 	private byte[] msds; 
+	@Column(name = "msds_file_name")
+	private String msdsFileName;
+	@Column(name = "msds_content_tye")
+	private String msdsContentType;
 	@Column(name = "into_term")
 	private String intoTerm;
 	@Column(name = "into_term_address")
@@ -253,6 +257,18 @@ public class Quotations {
 	}
 	public void setUpdatedAt(Timestamp updatedAt) {
 		this.updatedAt = updatedAt;
+	}
+	public String getMsdsFileName() {
+		return msdsFileName;
+	}
+	public void setMsdsFileName(String msdsFileName) {
+		this.msdsFileName = msdsFileName;
+	}
+	public String getMsdsContentType() {
+		return msdsContentType;
+	}
+	public void setMsdsContentType(String msdsContentType) {
+		this.msdsContentType = msdsContentType;
 	}
 	
 	
