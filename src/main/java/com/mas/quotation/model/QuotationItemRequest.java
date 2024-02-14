@@ -1,6 +1,8 @@
 package com.mas.quotation.model;
 
 public class QuotationItemRequest {
+	private int id;
+	private int quoteId;
 	private String containerType;
 	private String containerQty;
 	private String packType;
@@ -12,6 +14,22 @@ public class QuotationItemRequest {
 	private Double height; 
 	private String measurementUnit;
 	private Float cbm; 
+	private String createdAt; 
+	private String updatedAt;
+	
+	
+	public int getId() {
+		return id;
+	}
+	public void setId(int id) {
+		this.id = id;
+	}
+	public int getQuoteId() {
+		return quoteId;
+	}
+	public void setQuoteId(int quoteId) {
+		this.quoteId = quoteId;
+	}
 	public String getContainerType() {
 		return containerType;
 	}
@@ -78,5 +96,19 @@ public class QuotationItemRequest {
 	public void setCbm(Float cbm) {
 		this.cbm = cbm;
 	}
+	public String getCreatedAt() {
+		return createdAt;
+	}
+	public void setCreatedAt(String createdAt) {
+		this.createdAt = createdAt;
+	}
+	public String getUpdatedAt() {
+		return updatedAt;
+	}
+	public void setUpdatedAt(String updatedAt) {
+		this.updatedAt = updatedAt;
+	}
+	
+	
 	
 }

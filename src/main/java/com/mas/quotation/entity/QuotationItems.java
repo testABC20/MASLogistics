@@ -51,6 +51,10 @@ public class QuotationItems {
 	@Column(name = "drawing")
 	@Lob
 	private byte[] drawing; 
+	@Column(name = "drawing_file_name")
+	private String drawingFileName;
+	@Column(name = "drawing_content_type")
+	private String drawingContentType;
 	@Column(name = "status")
 	private Integer status;
 	@Column(name = "created_at")
@@ -160,6 +164,18 @@ public class QuotationItems {
 	}
 	public void setUpdatedAt(Timestamp updatedAt) {
 		this.updatedAt = updatedAt;
+	}
+	public String getDrawingFileName() {
+		return drawingFileName;
+	}
+	public void setDrawingFileName(String drawingFileName) {
+		this.drawingFileName = drawingFileName;
+	}
+	public String getDrawingContentType() {
+		return drawingContentType;
+	}
+	public void setDrawingContentType(String drawingContentType) {
+		this.drawingContentType = drawingContentType;
 	}
 	
 }

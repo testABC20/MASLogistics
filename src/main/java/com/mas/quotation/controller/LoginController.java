@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.mas.quotation.model.LoginDto;
+import com.mas.quotation.model.LoginResponse;
 import com.mas.quotation.model.SignUpDto;
 import com.mas.quotation.service.UserDetail;
 import com.mas.quotation.util.Constant;
@@ -33,12 +34,18 @@ public class LoginController {
 	
 	@CrossOrigin
 	@PostMapping("/login")
-	public ResponseEntity<String> authenticateUser(@RequestBody LoginDto loginDto) {
+	public ResponseEntity<LoginResponse> authenticateUser(@RequestBody LoginDto loginDto) {
 		logger.info("Login API called");
 		Authentication authentication = authenticationManager
 				.authenticate(new UsernamePasswordAuthenticationToken(loginDto.getUsername(), loginDto.getPassword()));
 		SecurityContextHolder.getContext().setAuthentication(authentication);
-		return new ResponseEntity<>("User login successfully!", HttpStatus.OK);
+		
+		LoginResponse resp = new LoginResponse();
+		resp.setStatus("User login successfully!");
+		resp.setUsername(authentication.getName());
+		resp.setRole(authentication.getAuthorities().toString());
+		
+		return new ResponseEntity<>(resp, HttpStatus.OK);
 	}
 	
 	@CrossOrigin

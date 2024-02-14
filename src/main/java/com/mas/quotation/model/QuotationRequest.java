@@ -5,6 +5,7 @@ import java.util.List;
 public class QuotationRequest {
 	private List<QuotationItemRequest> quoteItems;
 	
+	private int id;
 	private String type; 
 	private String name;
 	private String company;
@@ -26,6 +27,15 @@ public class QuotationRequest {
 	private String intoTerm;
 	private String intoTermAddress;
 	private Float totalCbm;
+	private String createdAt; 
+	private String updatedAt;
+	
+	public int getId() {
+		return id;
+	}
+	public void setId(int id) {
+		this.id = id;
+	}
 	public List<QuotationItemRequest> getQuoteItems() {
 		return quoteItems;
 	}
@@ -157,6 +167,18 @@ public class QuotationRequest {
 	}
 	public void setTotalCbm(Float totalCbm) {
 		this.totalCbm = totalCbm;
+	}
+	public String getCreatedAt() {
+		return createdAt;
+	}
+	public void setCreatedAt(String createdAt) {
+		this.createdAt = createdAt;
+	}
+	public String getUpdatedAt() {
+		return updatedAt;
+	}
+	public void setUpdatedAt(String updatedAt) {
+		this.updatedAt = updatedAt;
 	}
 	
 	
