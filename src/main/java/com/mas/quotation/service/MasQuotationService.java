@@ -72,6 +72,8 @@ public class MasQuotationService {
 				for (Quotations quote : quotations) {
 					quotation = new QuotationRequest();
 
+					quotation.setId(quote.getId());
+					
 					if (null != quote.getType() && !"".equals(quote.getType().trim()))
 						quotation.setType(quote.getType());
 					if (null != quote.getName() && !"".equals(quote.getName().trim()))
@@ -125,7 +127,6 @@ public class MasQuotationService {
 					if (quote.getUpdatedAt() != null)
 						quotation.setUpdatedAt(sf.format(new Date(quote.getUpdatedAt().getTime())));
 
-					int count = 0;
 					if (null != quote.getQuoteItems() && quote.getQuoteItems().size() > 0) {
 						List<QuotationItemRequest> quoteItemList = new ArrayList<>();
 						QuotationItemRequest items = null;
@@ -133,12 +134,13 @@ public class MasQuotationService {
 							if (null != itemReq) {
 								items = new QuotationItemRequest();
 
+								items.setId(itemReq.getId());
+								items.setQuoteId(quote.getId());
+								
 								if (itemReq.getDrawing() != null) {
 									ByteArrayResource is = new ByteArrayResource(itemReq.getDrawing());
-									fileMap.add(quote.getId() + Constant.DRAWING_FILE + count, is);
+									fileMap.add(quote.getId() + Constant.DRAWING_FILE + itemReq.getId(), is);
 								}
-
-								count++;
 
 								if (null != itemReq.getContainerType() && !"".equals(itemReq.getContainerType().trim()))
 									items.setContainerType(itemReq.getContainerType());
