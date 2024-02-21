@@ -22,15 +22,12 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.mas.quotation.entity.PackNPorts;
 import com.mas.quotation.entity.Quotations;
-import com.mas.quotation.model.LoginResponse;
 import com.mas.quotation.model.QuotationRequest;
 import com.mas.quotation.model.Response;
 import com.mas.quotation.service.MasQuotationService;
 
-import reactor.core.publisher.Mono;
-
 @RestController
-@RequestMapping(value = "/masquote/")
+@RequestMapping(value = "/masquote")
 public class MasQuotationController {
   @Autowired
   MasQuotationService service;
