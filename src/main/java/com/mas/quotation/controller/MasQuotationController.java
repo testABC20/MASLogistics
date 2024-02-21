@@ -22,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.mas.quotation.entity.PackNPorts;
 import com.mas.quotation.entity.Quotations;
+import com.mas.quotation.model.LoginResponse;
 import com.mas.quotation.model.QuotationRequest;
 import com.mas.quotation.model.Response;
 import com.mas.quotation.service.MasQuotationService;
@@ -38,7 +39,7 @@ public class MasQuotationController {
   
   @CrossOrigin
   @GetMapping({"/getPacknPorts"})
-  public Mono<Response> findAllPackNPorts() {
+  public ResponseEntity<Response> findAllPackNPorts() {
     List<PackNPorts> masQuoteList = service.findAllPackNPorts();
     Response response = new Response();
     if(null != masQuoteList) {
@@ -49,12 +50,12 @@ public class MasQuotationController {
     	response.setStatus("NO DATA FOUND");
     }
    
-    return Mono.just(response);
+    return new ResponseEntity<>(response, HttpStatus.OK);
   }
   
   @CrossOrigin
   @GetMapping({"/getPacknPortsByMode/{transportMode}"})
-  public Mono<Response> getPackNPortsTransport(@PathVariable String transportMode) {
+  public ResponseEntity<Response> getPackNPortsTransport(@PathVariable String transportMode) {
     List<PackNPorts> masQuoteList = null;
     Response response = new Response();
     logger.info("TransportMode used is:{}",transportMode);
@@ -72,13 +73,13 @@ public class MasQuotationController {
     	response.setStatus("INVALID TRANSPORT MODE");
     }
    
-    return Mono.just(response);
+    return new ResponseEntity<>(response, HttpStatus.OK);
   }
   
   @CrossOrigin
   @PostMapping(value = "/saveQuote", produces=MediaType.APPLICATION_JSON_VALUE,
 		     consumes=MediaType.MULTIPART_FORM_DATA_VALUE)
-  public Mono<Response> saveQuotation(@RequestPart("jsonBodyData") QuotationRequest quote, @RequestParam MultiValueMap<String, MultipartFile> files) {
+  public ResponseEntity<Response> saveQuotation(@RequestPart("jsonBodyData") QuotationRequest quote, @RequestParam MultiValueMap<String, MultipartFile> files) {
 	  Response response = new Response();
 	  Quotations quotation = service.saveQuotation(quote, files);
 	  
@@ -91,7 +92,7 @@ public class MasQuotationController {
 	  }else {
 		  response.setStatus("NO QUOTE FOUND");
 	  }
-	  return Mono.just(response);
+	  return new ResponseEntity<>(response, HttpStatus.OK);
   }
   
   @CrossOrigin
@@ -113,7 +114,7 @@ public class MasQuotationController {
   
   @CrossOrigin
   @GetMapping({"/getAllQuotes"})
-	public Mono<Response> findAllQuotesWithoutFiles() {
+	public ResponseEntity<Response> findAllQuotesWithoutFiles() {
 		logger.info("Inside findAllQuotesWithoutFiles");
 		Response response = new Response();
 		List<QuotationRequest> quotes = service.findAllQuotesWithoutFiles();
@@ -125,7 +126,7 @@ public class MasQuotationController {
 		} else {
 			response.setStatus("NO DATA FOUND");
 		}
-		return Mono.just(response);
+		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
   
   
