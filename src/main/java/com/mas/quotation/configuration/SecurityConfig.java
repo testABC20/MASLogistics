@@ -2,7 +2,6 @@ package com.mas.quotation.configuration;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
-import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -14,7 +13,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.filter.CorsFilter;
 
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter{
@@ -32,15 +30,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 	protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests(requests -> requests.antMatchers("/api/**").permitAll().anyRequest().
                 fullyAuthenticated()).httpBasic(withDefaults()).csrf(csrf -> csrf.disable()).
-                headers(withDefaults());
+                headers(withDefaults()).cors(cors -> cors.configurationSource(request -> new CorsConfiguration().applyPermitDefaultValues()));
+        
 	}
+	/*
+	 * @Bean CorsConfigurationSource corsConfigurationSource() { CorsConfiguration
+	 * configuration = new CorsConfiguration();
+	 * configuration.applyPermitDefaultValues(); UrlBasedCorsConfigurationSource
+	 * source = new UrlBasedCorsConfigurationSource();
+	 * source.registerCorsConfiguration("/**", configuration); return source; }
+	 */
 	
-	@Bean
-	CorsConfigurationSource corsConfigurationSource() {
-	    CorsConfiguration configuration = new CorsConfiguration();
-	    configuration.applyPermitDefaultValues();
-	    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-	    source.registerCorsConfiguration("/**", configuration);
-	    return source;
-	}
+	
 }
