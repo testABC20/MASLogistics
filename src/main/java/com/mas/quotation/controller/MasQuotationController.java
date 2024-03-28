@@ -46,8 +46,7 @@ public class MasQuotationController {
     }else {
     	response.setStatus("NO DATA FOUND");
     }
-   
-    return new ResponseEntity<>(response, HttpStatus.OK);
+    return ResponseEntity.status(HttpStatus.ACCEPTED).header("Access-Control-Allow-Origin: *").body(response);
   }
   
   @CrossOrigin
@@ -70,7 +69,7 @@ public class MasQuotationController {
     	response.setStatus("INVALID TRANSPORT MODE");
     }
    
-    return new ResponseEntity<>(response, HttpStatus.OK);
+    return ResponseEntity.status(HttpStatus.ACCEPTED).header("Access-Control-Allow-Origin: *").body(response);
   }
   
   @CrossOrigin
@@ -89,7 +88,7 @@ public class MasQuotationController {
 	  }else {
 		  response.setStatus("NO QUOTE FOUND");
 	  }
-	  return new ResponseEntity<>(response, HttpStatus.OK);
+	  return ResponseEntity.status(HttpStatus.ACCEPTED).header("Access-Control-Allow-Origin: *").body(response);
   }
   
   @CrossOrigin
@@ -101,7 +100,7 @@ public class MasQuotationController {
 	  
 	  if(null != fileMap && !fileMap.isEmpty()) {
 		  logger.info("Retrieving Files are success");
-		  return new ResponseEntity<MultiValueMap<String, Object>>(fileMap, HttpStatus.OK);
+		  return ResponseEntity.status(HttpStatus.ACCEPTED).header("Access-Control-Allow-Origin: *").body(fileMap);
 	  } else {
 		  logger.info("No Data found");
 		  return new ResponseEntity<MultiValueMap<String, Object>>(HttpStatus.NO_CONTENT);
@@ -123,14 +122,8 @@ public class MasQuotationController {
 		} else {
 			response.setStatus("NO DATA FOUND");
 		}
-		return new ResponseEntity<>(response, HttpStatus.OK);
+		return ResponseEntity.status(HttpStatus.ACCEPTED).header("Access-Control-Allow-Origin: *").body(response);
 	}
-  
-  
-  @CrossOrigin
-  @GetMapping({"/health"})
-  public String health() {
-    return "Hello & Welcome to MAS Logistics !!!";
-  }
+ 
 }
 

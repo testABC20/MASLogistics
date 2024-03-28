@@ -10,6 +10,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -45,7 +46,8 @@ public class LoginController {
 		resp.setUsername(authentication.getName());
 		resp.setRole(authentication.getAuthorities().toString());
 		
-		return new ResponseEntity<>(resp, HttpStatus.OK);
+		//return new ResponseEntity<>(resp, HttpStatus.OK);
+		return ResponseEntity.status(HttpStatus.ACCEPTED).header("Access-Control-Allow-Origin: *").body(resp);
 	}
 	
 	@CrossOrigin
@@ -54,8 +56,14 @@ public class LoginController {
 		logger.info("SignUp API called");
 		String signUp = userService.signUpUser(signUpDto);
 		if(signUp.equals(Constant.SIGN_UP_SUCCESS)) {
-			return new ResponseEntity<>("User is registered successfully!", HttpStatus.OK);
+			return ResponseEntity.status(HttpStatus.ACCEPTED).header("Access-Control-Allow-Origin: *").body("User is registered successfully!");
 		}
-		return new ResponseEntity<>(signUp, HttpStatus.BAD_REQUEST);
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).header("Access-Control-Allow-Origin: *").body(signUp);
     }
+	
+	@CrossOrigin
+	@GetMapping({"/health"})
+	public String health() {
+		return "Hello & Welcome to MAS Logistics !!!";
+	}
 }
