@@ -35,44 +35,6 @@ public class MasQuotationController {
   final Logger logger = LoggerFactory.getLogger(this.getClass());
   
   @CrossOrigin
-  @GetMapping({"/getPacknPorts"})
-  public ResponseEntity<Response> findAllPackNPorts() {
-    List<PackNPorts> masQuoteList = service.findAllPackNPorts();
-    Response response = new Response();
-    if(null != masQuoteList) {
-    	logger.info("FindAllPackNPorts is Success");
-    	response.setResponseData(masQuoteList);
-	    response.setStatus("SUCCESS");
-    }else {
-    	response.setStatus("NO DATA FOUND");
-    }
-    return ResponseEntity.status(HttpStatus.ACCEPTED).header("Access-Control-Allow-Origin: *").body(response);
-  }
-  
-  @CrossOrigin
-  @GetMapping({"/getPacknPortsByMode/{transportMode}"})
-  public ResponseEntity<Response> getPackNPortsTransport(@PathVariable String transportMode) {
-    List<PackNPorts> masQuoteList = null;
-    Response response = new Response();
-    logger.info("TransportMode used is:{}",transportMode);
-    
-    if(transportMode != null && !transportMode.trim().isEmpty()) {
-    	masQuoteList = service.getPackNPortsTransport(transportMode);
-    	 if(null != masQuoteList) {
-    		 logger.info("getPackNPortsTransport is Success");
-	    	response.setResponseData(masQuoteList);
-		    response.setStatus("SUCCESS");
-	    }else {
-	    	response.setStatus("NO DATA FOUND");
-	    }
-    }else{
-    	response.setStatus("INVALID TRANSPORT MODE");
-    }
-   
-    return ResponseEntity.status(HttpStatus.ACCEPTED).header("Access-Control-Allow-Origin: *").body(response);
-  }
-  
-  @CrossOrigin
   @PostMapping(value = "/saveQuote", produces=MediaType.APPLICATION_JSON_VALUE,
 		     consumes=MediaType.MULTIPART_FORM_DATA_VALUE)
   public ResponseEntity<Response> saveQuotation(@RequestPart("jsonBodyData") QuotationRequest quote, @RequestParam MultiValueMap<String, MultipartFile> files) {
