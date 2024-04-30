@@ -26,8 +26,10 @@ import com.amazonaws.services.simpleemail.model.Destination;
 import com.amazonaws.services.simpleemail.model.Message;
 import com.amazonaws.services.simpleemail.model.SendEmailRequest;
 import com.amazonaws.services.simpleemail.model.SendEmailResult;
+import com.mas.quotation.dao.CurrencyDAO;
 import com.mas.quotation.dao.PackNPortsDAO;
 import com.mas.quotation.dao.QuotationsDAO;
+import com.mas.quotation.entity.Currencies;
 import com.mas.quotation.entity.PackNPorts;
 import com.mas.quotation.entity.QuotationItems;
 import com.mas.quotation.entity.Quotations;
@@ -44,6 +46,9 @@ public class MasQuotationService {
 	QuotationsDAO quoteDAO;
 
 	@Autowired
+	CurrencyDAO currencyDAO;
+	
+	@Autowired
 	AmazonSimpleEmailService amazonSimpleEmailService;
 
 	final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -56,6 +61,10 @@ public class MasQuotationService {
 		return packNPortsDAO.getPackNPortsTransport(transportMode);
 	}
 
+	public List<Currencies> findAllCurrencies() {
+		return currencyDAO.findAllCurrencies();
+	}
+	
 	public MultiValueMap<String, Object> findAllQuotes() {
 		logger.info("Get all quotations");
 
