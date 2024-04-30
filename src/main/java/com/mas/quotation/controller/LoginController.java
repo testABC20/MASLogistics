@@ -1,5 +1,6 @@
 package com.mas.quotation.controller;
 
+import java.util.Iterator;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -10,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -49,11 +51,12 @@ public class LoginController {
 				.authenticate(new UsernamePasswordAuthenticationToken(loginDto.getUsername(), loginDto.getPassword()));
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 		
+		Iterator<? extends GrantedAuthority> iter = authentication.getAuthorities().iterator();
 		LoginResponse resp = new LoginResponse();
 		resp.setStatus("User login successfully!");
 		resp.setUsername(authentication.getName());
-		resp.setRole(authentication.getAuthorities().toString());
-		
+		resp.setRole(iter.next().toString());
+		resp.setEmailId(iter.next().toString());
 		//return new ResponseEntity<>(resp, HttpStatus.OK);
 		return ResponseEntity.status(HttpStatus.ACCEPTED).header("Access-Control-Allow-Origin: *").body(resp);
 	}

@@ -11,8 +11,6 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter{
@@ -33,13 +31,5 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
                 headers(withDefaults()).cors(cors -> cors.configurationSource(request -> new CorsConfiguration().applyPermitDefaultValues()));
         
 	}
-	/*
-	 * @Bean CorsConfigurationSource corsConfigurationSource() { CorsConfiguration
-	 * configuration = new CorsConfiguration();
-	 * configuration.applyPermitDefaultValues(); UrlBasedCorsConfigurationSource
-	 * source = new UrlBasedCorsConfigurationSource();
-	 * source.registerCorsConfiguration("/**", configuration); return source; }
-	 */
-	
 	
 }
