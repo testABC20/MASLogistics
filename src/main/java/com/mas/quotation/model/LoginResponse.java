@@ -4,6 +4,7 @@ public class LoginResponse {
 	private String status;
 	private String role;
 	private String username;
+	private String emailId;
 	
 	public String getStatus() {
 		return status;
@@ -22,6 +23,12 @@ public class LoginResponse {
 	}
 	public void setUsername(String username) {
 		this.username = username;
+	}
+	public String getEmailId() {
+		return emailId;
+	}
+	public void setEmailId(String emailId) {
+		this.emailId = emailId;
 	}
 	
 	

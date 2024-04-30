@@ -1,6 +1,9 @@
 package com.mas.quotation.service;
 
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -20,6 +23,7 @@ import com.mas.quotation.dao.UserDAO;
 import com.mas.quotation.entity.Role;
 import com.mas.quotation.entity.User;
 import com.mas.quotation.model.SignUpDto;
+import com.mas.quotation.model.UserRole;
 import com.mas.quotation.util.Constant;
 
 @Service
@@ -45,6 +49,8 @@ public class UserDetail implements UserDetailsService {
 		}
 		Set<GrantedAuthority> authorities = user.getRoles().stream()
 				.map((role) -> new SimpleGrantedAuthority(role.getName())).collect(Collectors.toSet());
+		authorities.add(new SimpleGrantedAuthority(user.getEmail()));
+		
 		logger.info("Authorization success");
 		return new org.springframework.security.core.userdetails.User(username, user.getPassword(), authorities);
 	}
@@ -70,5 +76,45 @@ public class UserDetail implements UserDetailsService {
         userRepo.save(user);
         logger.info("User saved with ROLE_USER");
         return Constant.SIGN_UP_SUCCESS;
+	}
+	
+	public String changeRole(UserRole userRole) {
+		logger.info("Validate if username present");
+		// checking for username exists in a database
+		User user = null;
+		try {
+			user = userRepo.findByUsername(userRole.getUsername());
+			if (user != null) {
+				Role role = roleRepo.findByName(userRole.getRole()).get();
+				if(role != null) {
+					Set<Role> roles = new HashSet<>();
+					roles.add(role);
+					user.setRoles(roles);
+				}
+				userRepo.save(user);
+		        logger.info("User saved with role= {}",userRole.getRole());
+			}
+		}catch(NoSuchElementException e) {
+			logger.error("Username/Role not present in DB: {}", e);
+			return "Username/Role not Found! Valid roles are ROLE_USER and ROLE_ADMIN";
+		}catch(Exception e) {
+			logger.error("Error Occurred: {}", e);
+			return "Error changing Username/Role";
+		}
+		return Constant.SIGN_UP_SUCCESS;
+	}
+	
+	public List<UserRole> getAllUsers(){
+		logger.info("Fetch All Users");
+		List<User> userList = userRepo.findAll();
+		List<UserRole> userRoles = null;
+		if (null != userList) {
+			userRoles = userList
+					.stream().map(p -> new UserRole(p.getUsername(), p.getRoles().stream()
+							.map((role) -> (role.getName())).collect(Collectors.toSet()).toString()))
+					.collect(Collectors.toList());
+
+		}
+		return userRoles;
 	}
 }
