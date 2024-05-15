@@ -22,28 +22,37 @@ import com.mas.quotation.service.MasQuotationService;
 @RestController
 @RequestMapping(value = "/masquote")
 public class MasQuotationController {
-  @Autowired
-  MasQuotationService service;
-  
-  final Logger logger = LoggerFactory.getLogger(this.getClass());
-  
-  @CrossOrigin
-  @GetMapping(value="/getQuotes", produces=MediaType.MULTIPART_FORM_DATA_VALUE)
-  public ResponseEntity<MultiValueMap<String, Object>> findAllQuotes() {
-	  logger.info("Inside getallQuotes");
-	  
-	  MultiValueMap<String, Object> fileMap = service.findAllQuotes();
-	  
-	  if(null != fileMap && !fileMap.isEmpty()) {
-		  logger.info("Retrieving Files are success");
-		  return ResponseEntity.status(HttpStatus.ACCEPTED).header("Access-Control-Allow-Origin: *").body(fileMap);
-	  } else {
-		  logger.info("No Data found");
-		  return new ResponseEntity<MultiValueMap<String, Object>>(HttpStatus.NO_CONTENT);
-	  }
-	 
-  }
-  
+	@Autowired
+	MasQuotationService service;
+
+	final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+	/**
+	 * This Get API is used to get all quotes with files
+	 * 
+	 * @return ResponseEntity<MultiValueMap<String, Object>>
+	 */
+	@CrossOrigin
+	@GetMapping(value = "/getQuotes", produces = MediaType.MULTIPART_FORM_DATA_VALUE)
+	public ResponseEntity<MultiValueMap<String, Object>> findAllQuotes() {
+		logger.info("Inside getallQuotes");
+
+		MultiValueMap<String, Object> fileMap = service.findAllQuotes();
+
+		if (null != fileMap && !fileMap.isEmpty()) {
+			logger.info("Retrieving Files are success");
+			return ResponseEntity.status(HttpStatus.ACCEPTED).header("Access-Control-Allow-Origin: *").body(fileMap);
+		} else {
+			logger.info("No Data found");
+			return new ResponseEntity<MultiValueMap<String, Object>>(HttpStatus.NO_CONTENT);
+		}
+
+	}
+
+	/**
+	 * This Get API is used to get all quotes
+	 * @return ResponseEntity<Response>
+	 */
 	@CrossOrigin
 	@GetMapping({ "/getAllQuotes" })
 	public ResponseEntity<Response> findAllQuotesWithoutFiles() {
@@ -61,6 +70,10 @@ public class MasQuotationController {
 		return ResponseEntity.status(HttpStatus.ACCEPTED).header("Access-Control-Allow-Origin: *").body(response);
 	}
 
+	/**
+	 * This Get API is used to get Currencies
+	 * @return ResponseEntity<Response>
+	 */
 	@CrossOrigin
 	@GetMapping({ "/getCurrencies" })
 	public ResponseEntity<Response> findAllCurrencies() {

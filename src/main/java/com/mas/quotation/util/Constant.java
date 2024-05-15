@@ -19,7 +19,10 @@ public class Constant {
 	public static String SENDER_EMAIL = "t201181abc@gmail.com";
 	public static String EMAIL_SUBJECT = "Quote Saved";
 	public static String AWS_REGION = "eu-north-1";
-	public static String AWS_ACCESS_KEY = "AKIAU3AG252J4RPTZSXX";
-	public static String AWS_SECRET_KEY = "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";
+	public static String AWS_ACCESS_KEY = "AKIAU3AG252JQJDKUMEL";
+	public static String AWS_SECRET_KEY = "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";
 	public static String SIGN_UP_SUCCESS = "SIGNED";
+	public static String DELETE_SUCCESS = "DELETED";
+	public static String CHANGE_SUCCESS = "CHANGED";
+	public static String ROLE_ADMIN = "ROLE_ADMIN";
 }

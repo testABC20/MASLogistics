@@ -22,9 +22,12 @@ import com.mas.quotation.dao.RoleDAO;
 import com.mas.quotation.dao.UserDAO;
 import com.mas.quotation.entity.Role;
 import com.mas.quotation.entity.User;
+import com.mas.quotation.model.ChangePasswordDto;
 import com.mas.quotation.model.SignUpDto;
 import com.mas.quotation.model.UserRole;
 import com.mas.quotation.util.Constant;
+import com.mas.quotation.util.InvalidInputException;
+import com.mas.quotation.util.ValidationUtil;
 
 @Service
 public class UserDetail implements UserDetailsService {
@@ -40,6 +43,9 @@ public class UserDetail implements UserDetailsService {
 	
 	final Logger logger = LoggerFactory.getLogger(this.getClass());
 	
+	/**
+	 * This method is used to authenticate the user
+	 */
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		logger.info("Check for username or email in database");
@@ -55,34 +61,100 @@ public class UserDetail implements UserDetailsService {
 		return new org.springframework.security.core.userdetails.User(username, user.getPassword(), authorities);
 	}
 	
+	/**
+	 * This method is used to register new user
+	 * @param signUpDto
+	 * @return String
+	 */
 	public String signUpUser(SignUpDto signUpDto) {
-		logger.info("Validate if username or email present");
-		 // checking for username exists in a database
-        if(userRepo.findByUsername(signUpDto.getUsername()) != null){
-            return "Username is already exist!";
-        }
-        // checking for email exists in a database
-        if(userRepo.findByEmail(signUpDto.getEmail()) != null){
-            return "Email is already exist!";
-        }
-        // creating user object
-        User user = new User();
-        user.setName(signUpDto.getName());
-        user.setUsername(signUpDto.getUsername());
-        user.setEmail(signUpDto.getEmail());
-        user.setPassword(passwordEncoder.encode(signUpDto.getPassword()));
-        Role roles = roleRepo.findByName("ROLE_USER").get();
-        user.setRoles(Collections.singleton(roles));
-        userRepo.save(user);
-        logger.info("User saved with ROLE_USER");
+		try {
+			logger.info("Validate SignUp details");
+			ValidationUtil.validateSignUp(signUpDto);
+			
+			logger.info("Validate if username or email present");
+			 // checking for username exists in a database
+	        if(userRepo.findByUsername(signUpDto.getUsername()) != null){
+	            return "Username is already exist!";
+	        }
+	        // checking for email exists in a database
+	        if(userRepo.findByEmail(signUpDto.getEmail()) != null){
+	            return "Email is already exist!";
+	        }
+	        // creating user object
+	        User user = new User();
+	        user.setName(signUpDto.getName());
+	        user.setUsername(signUpDto.getUsername());
+	        user.setEmail(signUpDto.getEmail());
+	        user.setPassword(passwordEncoder.encode(signUpDto.getPassword()));
+	        Role roles = roleRepo.findByName("ROLE_USER").get();
+	        user.setRoles(Collections.singleton(roles));
+	        userRepo.save(user);
+	        logger.info("User saved with ROLE_USER");
+	        
+		}catch(InvalidInputException ex) {
+			logger.error("Invalid Entries in Signup:{}",ex);
+			return ex.getMessage();
+		}catch(Exception e) {
+			logger.error("Error Occurred: {}", e);
+			return "Error registering the user";
+		}
+		
         return Constant.SIGN_UP_SUCCESS;
 	}
 	
-	public String changeRole(UserRole userRole) {
-		logger.info("Validate if username present");
+	/**
+	 * This method is used to change the password
+	 * @param changePasswordDto
+	 * @return String
+	 */
+	public String changePassword(ChangePasswordDto changePasswordDto) {
+		
 		// checking for username exists in a database
 		User user = null;
 		try {
+			logger.info("Validate Input");
+			ValidationUtil.validateChangePassword(changePasswordDto);
+			
+			logger.info("Validate if username present");
+			user = userRepo.findByUsername(changePasswordDto.getUsername());
+			if (user != null) {
+				if(passwordEncoder.matches(changePasswordDto.getPassword(),user.getPassword())) {
+					user.setPassword(passwordEncoder.encode(changePasswordDto.getNewPassword()));
+					userRepo.save(user);
+				}else {
+					return "Invalid Credentials!";
+				}
+			}else {
+				logger.info("Username not present in DB: {}", changePasswordDto.getUsername());
+				return "Username not Found!";
+			}
+		}catch(InvalidInputException ex) {
+			logger.error("Invalid Input: {}", ex);
+			return ex.getMessage();
+		}catch(NoSuchElementException e) {
+			logger.error("Username not present in DB: {}", e);
+			return "Username not Found!";
+		}catch(Exception e) {
+			logger.error("Error Occurred: {}", e);
+			return "Error changing password for: "+changePasswordDto.getUsername();
+		}
+		return Constant.CHANGE_SUCCESS;
+	}
+	
+	/**
+	 * This method is used to change user roles
+	 * @param userRole
+	 * @return String
+	 */
+	public String changeRole(UserRole userRole) {
+		User user = null;
+		try {
+			logger.info("Validate Input");
+			ValidationUtil.validateUserRole(userRole);
+			
+			logger.info("Validate if username present");
+			// checking for username exists in a database
+			
 			user = userRepo.findByUsername(userRole.getUsername());
 			if (user != null) {
 				Role role = roleRepo.findByName(userRole.getRole()).get();
@@ -90,10 +162,19 @@ public class UserDetail implements UserDetailsService {
 					Set<Role> roles = new HashSet<>();
 					roles.add(role);
 					user.setRoles(roles);
+				}else {
+					logger.info("Role not present in DB for: {}", userRole.getUsername());
+					return "Username/Role not Found! Valid roles are ROLE_USER and ROLE_ADMIN";
 				}
 				userRepo.save(user);
 		        logger.info("User saved with role= {}",userRole.getRole());
+			}else {
+				logger.info("Username not present in DB: {}", userRole.getUsername());
+				return "Username not Found!";
 			}
+		}catch(InvalidInputException ex) {
+			logger.error("Invalid Input: {}", ex);
+			return ex.getMessage();
 		}catch(NoSuchElementException e) {
 			logger.error("Username/Role not present in DB: {}", e);
 			return "Username/Role not Found! Valid roles are ROLE_USER and ROLE_ADMIN";
@@ -104,6 +185,10 @@ public class UserDetail implements UserDetailsService {
 		return Constant.SIGN_UP_SUCCESS;
 	}
 	
+	/**
+	 * This method is used fetch all users
+	 * @return List<UserRole>
+	 */
 	public List<UserRole> getAllUsers(){
 		logger.info("Fetch All Users");
 		List<User> userList = userRepo.findAll();
@@ -116,5 +201,40 @@ public class UserDetail implements UserDetailsService {
 
 		}
 		return userRoles;
+	}
+	
+	/**
+	 * This method is used to delete an user
+	 * @param userRole
+	 * @return String
+	 */
+	public String deleteUser(UserRole userRole) {
+		User user = null;
+		try {
+			logger.info("Validate Input");
+			ValidationUtil.validateUser(userRole);
+			
+			logger.info("Validate if username present");
+			// checking for username exists in a database
+			
+			user = userRepo.findByUsername(userRole.getUsername());
+			if (user != null) {
+				userRepo.delete(user);
+		        logger.info("User Deleted ");
+			}else {
+				logger.error("Username not present in DB: {}", userRole.getUsername());
+				return "Username not Found!";
+			}
+		}catch(InvalidInputException ex) {
+			logger.error("Invalid Input: {}", ex);
+			return ex.getMessage();
+		}catch(NoSuchElementException e) {
+			logger.error("Username not present in DB: {}", e);
+			return "Username not Found!";
+		}catch(Exception e) {
+			logger.error("Error Occurred: {}", e);
+			return "Error deleting Username";
+		}
+		return Constant.DELETE_SUCCESS;
 	}
 }
