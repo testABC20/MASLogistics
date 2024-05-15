@@ -3,6 +3,7 @@ package com.mas.quotation.util;
 import com.mas.quotation.model.ChangePasswordDto;
 import com.mas.quotation.model.LoginDto;
 import com.mas.quotation.model.SignUpDto;
+import com.mas.quotation.model.UserDto;
 import com.mas.quotation.model.UserRole;
 
 public class ValidationUtil {
@@ -17,9 +18,9 @@ public class ValidationUtil {
 		}
 	}
 	
-	public static void validateUser(UserRole userRole) throws InvalidInputException{
-		if(null != userRole) {
-			if(null == userRole.getUsername() || userRole.getUsername().trim().equals("")) 
+	public static void validateUser(UserDto userDto) throws InvalidInputException{
+		if(null != userDto) {
+			if(null == userDto.getUsername() || userDto.getUsername().trim().equals("")) 
 				throw new InvalidInputException("Enter Username!");
 		}else {
 			throw new InvalidInputException("User not entered!");

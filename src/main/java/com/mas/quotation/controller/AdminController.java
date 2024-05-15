@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.mas.quotation.model.Response;
+import com.mas.quotation.model.UserDto;
 import com.mas.quotation.model.UserRole;
 import com.mas.quotation.service.UserDetail;
 import com.mas.quotation.util.Constant;
@@ -80,7 +81,7 @@ public class AdminController {
 	 */
 	@CrossOrigin
 	@PostMapping("/deleteUser")
-    public ResponseEntity<?> deleteUser(@RequestBody UserRole userRole){
+    public ResponseEntity<?> deleteUser(@RequestBody UserDto user){
 		logger.info("deleteUser API called");
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		
@@ -89,7 +90,7 @@ public class AdminController {
 		if(!Constant.ROLE_ADMIN.equals(role))
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).header("Access-Control-Allow-Origin: *").body("Only Admin can delete a user!");
 		
-		String signUp = userService.deleteUser(userRole);
+		String signUp = userService.deleteUser(user);
 		if(signUp.equals(Constant.DELETE_SUCCESS)) {
 			return ResponseEntity.status(HttpStatus.ACCEPTED).header("Access-Control-Allow-Origin: *").body("User Deleted successfully!");
 		}

@@ -24,6 +24,7 @@ import com.mas.quotation.entity.Role;
 import com.mas.quotation.entity.User;
 import com.mas.quotation.model.ChangePasswordDto;
 import com.mas.quotation.model.SignUpDto;
+import com.mas.quotation.model.UserDto;
 import com.mas.quotation.model.UserRole;
 import com.mas.quotation.util.Constant;
 import com.mas.quotation.util.InvalidInputException;
@@ -208,21 +209,21 @@ public class UserDetail implements UserDetailsService {
 	 * @param userRole
 	 * @return String
 	 */
-	public String deleteUser(UserRole userRole) {
+	public String deleteUser(UserDto userDto) {
 		User user = null;
 		try {
 			logger.info("Validate Input");
-			ValidationUtil.validateUser(userRole);
+			ValidationUtil.validateUser(userDto);
 			
 			logger.info("Validate if username present");
 			// checking for username exists in a database
 			
-			user = userRepo.findByUsername(userRole.getUsername());
+			user = userRepo.findByUsername(userDto.getUsername());
 			if (user != null) {
 				userRepo.delete(user);
 		        logger.info("User Deleted ");
 			}else {
-				logger.error("Username not present in DB: {}", userRole.getUsername());
+				logger.error("Username not present in DB: {}", userDto.getUsername());
 				return "Username not Found!";
 			}
 		}catch(InvalidInputException ex) {
