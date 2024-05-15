@@ -26,8 +26,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests(requests -> requests.antMatchers("/api/**").permitAll().anyRequest().
-                fullyAuthenticated()).httpBasic(withDefaults()).csrf(csrf -> csrf.disable()).
+        http.authorizeRequests(requests -> requests.antMatchers("/api/**").permitAll().
+        		antMatchers("/swagger-ui.html").permitAll().
+        		antMatchers("/swagger-ui/**").permitAll().
+        		antMatchers("/webjars/springfox-swagger-ui/**").permitAll().
+        		antMatchers("/swagger-resources/**").permitAll().
+        		antMatchers("/v3/api-docs/**").permitAll().
+        		anyRequest().fullyAuthenticated()).httpBasic(withDefaults()).csrf(csrf -> csrf.disable()).
                 headers(withDefaults()).cors(cors -> cors.configurationSource(request -> new CorsConfiguration().applyPermitDefaultValues()));
         
 	}
